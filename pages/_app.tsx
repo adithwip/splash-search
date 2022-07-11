@@ -1,9 +1,15 @@
 import type { AppProps } from "next/app";
+
+import { useState } from "react";
 import Head from "next/head";
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { MantineProvider } from "@mantine/core";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
+
+  const [queryClient] = useState(() => new QueryClient());
 
   return (
     <>
@@ -15,9 +21,14 @@ export default function App(props: AppProps) {
         />
       </Head>
 
-      <MantineProvider withGlobalStyles withNormalizeCSS>
-        <Component {...pageProps} />
-      </MantineProvider>
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <MantineProvider withGlobalStyles withNormalizeCSS>
+            <Component {...pageProps} />
+          </MantineProvider>
+        </Hydrate>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </>
   );
 }
