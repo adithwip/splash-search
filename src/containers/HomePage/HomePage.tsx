@@ -1,15 +1,22 @@
 import { useState } from "react";
 import {
+  ActionIcon,
+  Affix,
   TextInput,
   SimpleGrid,
   Loader,
   Center,
   Button,
   Text,
+  Transition,
 } from "@mantine/core";
-import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
+import {
+  useDebouncedValue,
+  useLocalStorage,
+  useWindowScroll,
+} from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { Search } from "tabler-icons-react";
+import { Search, ArrowUp } from "tabler-icons-react";
 
 import Layout from "components/Layout";
 import ImageCard from "components/ImageCard";
@@ -20,6 +27,7 @@ import config from "constants/config";
 
 const HomePage = () => {
   const [page, setPage] = useState(1);
+  const [scroll, scrollTo] = useWindowScroll();
   const [searchValue, setSearchValue] = useLocalStorage({
     key: config.searchKey,
     defaultValue: "",
@@ -102,6 +110,25 @@ const HomePage = () => {
         value={searchValue}
         onChange={(event) => setSearchValue(event.currentTarget.value)}
       />
+
+      {/* 
+        Scroll to top component
+      */}
+      <Affix position={{ bottom: 20, right: 20 }}>
+        <Transition transition="slide-up" mounted={scroll.y > 0}>
+          {(transitionStyles) => (
+            <ActionIcon
+              component="button"
+              variant="filled"
+              radius="xl"
+              style={transitionStyles}
+              onClick={() => scrollTo({ y: 0 })}
+            >
+              <ArrowUp size={16} />
+            </ActionIcon>
+          )}
+        </Transition>
+      </Affix>
 
       {isLoading ? (
         <Center style={{ height: "400px" }}>
