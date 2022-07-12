@@ -25,6 +25,10 @@ const useStyles = createStyles((theme) => ({
 
       opacity: 1,
     },
+
+    '@media (max-width: 500px)': {
+      display: 'none'
+    }
   },
 
   favorite_action_wrapper: {

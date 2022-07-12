@@ -1,14 +1,6 @@
 import Image from "next/image";
-import {
-  TextInput,
-  SimpleGrid,
-  Box,
-  Text,
-  ActionIcon,
-  Avatar,
-  Group,
-} from "@mantine/core";
-import { Heart, Download } from "tabler-icons-react";
+import { Box, Text, ActionIcon, Avatar, Group } from "@mantine/core";
+import { Heart, Download, Trash } from "tabler-icons-react";
 
 import useStyles from "./styles";
 
@@ -21,10 +13,12 @@ interface Props {
   blurHash: string;
   color: string;
   onClickFavoriteButton?: () => void;
+  onClickRemoveFavoriteButton?: () => void;
 }
 
 const ImageCard = ({
   onClickFavoriteButton,
+  onClickRemoveFavoriteButton,
   profileImage,
   username,
   download,
@@ -33,21 +27,39 @@ const ImageCard = ({
   blurHash,
   color,
 }: Props) => {
+  console.log(
+    "🚀 ~ file: ImageCard.tsx ~ line 28 ~ onClickFavoriteButton",
+    typeof onClickFavoriteButton
+  );
   const { classes } = useStyles();
 
   return (
     <Box className={classes.image_wrapper}>
       <Box className={classes.hover_wrapper}>
         <Box className={classes.favorite_action_wrapper}>
-          <ActionIcon
-            onClick={onClickFavoriteButton}
-            component="button"
-            variant="filled"
-            size="lg"
-            className={classes.favorite_action_button}
-          >
-            <Heart size={20} color="black" />
-          </ActionIcon>
+          {typeof onClickFavoriteButton === "function" ? (
+            <ActionIcon
+              onClick={onClickFavoriteButton}
+              component="button"
+              variant="filled"
+              size="lg"
+              className={classes.favorite_action_button}
+            >
+              <Heart size={20} color="black" />
+            </ActionIcon>
+          ) : null}
+
+          {typeof onClickRemoveFavoriteButton === "function" ? (
+            <ActionIcon
+              onClick={onClickRemoveFavoriteButton}
+              component="button"
+              variant="filled"
+              size="lg"
+              className={classes.favorite_action_button}
+            >
+              <Trash size={20} color="black" />
+            </ActionIcon>
+          ) : null}
         </Box>
 
         <Group className={classes.users_and_download_wrapper}>
