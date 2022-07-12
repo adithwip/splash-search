@@ -2,10 +2,11 @@ import { useQuery, useInfiniteQuery } from 'react-query'
 import { createApi } from 'unsplash-js'
 
 const DEFAULT_QUERY = 'cat'
+const CLIENT_KEY: string = process.env.NEXT_PUBLIC_ENV_UNSPLASH_CLIENT_KEY as string
+
 
 const unsplash = createApi({
-  // TODO: use env
-  accessKey: 'ItYmaf7SwniU7gw9xOk_wyRimeQmuK6DoYaNj8je5xk'
+  accessKey: CLIENT_KEY
 })
 
 
