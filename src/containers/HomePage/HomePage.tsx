@@ -10,17 +10,24 @@ import {
   Stack,
   Group,
 } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
 import { Search, Heart, Download } from "tabler-icons-react";
 
 import Layout from "components/Layout";
 import { useSearch } from "hooks/useSearch";
+
+import type { Favorite } from "./types";
+import config from "constants/config";
 import useStyles from "./styles";
 
 const HomePage = () => {
   const [value, setValue] = useState("");
   const [debouncedValue] = useDebouncedValue(value, 1000);
   const { data, isLoading, isFetching, isError } = useSearch(debouncedValue);
+  const [favorite, setFavorite] = useLocalStorage<Favorite[]>({
+    key: config.favoriteImageKey,
+    defaultValue: [],
+  });
 
   const { classes } = useStyles();
 
@@ -57,16 +64,32 @@ const HomePage = () => {
             links: { download },
             user: {
               username,
-              portfolio_url,
               profile_image: { medium: profileImage },
             },
           } = res;
+
+          const handleOnClickFavorite = () => {
+            const copiedFavoriteState = [...favorite];
+            const newFavoriteState = [
+              ...copiedFavoriteState,
+              {
+                id,
+                urls: { regular },
+                alt_description,
+                blur_hash,
+                color,
+              },
+            ];
+
+            setFavorite(newFavoriteState);
+          };
 
           return (
             <Box key={id} className={classes.image_wrapper}>
               <Box className={classes.hover_wrapper}>
                 <Box className={classes.favorite_action_wrapper}>
                   <ActionIcon
+                    onClick={handleOnClickFavorite}
                     component="button"
                     variant="filled"
                     className={classes.favorite_action_button}
