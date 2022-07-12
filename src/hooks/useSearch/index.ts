@@ -26,7 +26,7 @@ const fetchUnsplashApi = async ({ query = DEFAULT_QUERY }: FetchParams) => {
   return res
 }
 
-export const useSearch = (query: string = DEFAULT_QUERY) => {
+export const useSearch = (query: string) => {
   return useQuery(
     ['search', query],
     () => fetchUnsplashApi({ query }),

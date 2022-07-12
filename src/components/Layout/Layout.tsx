@@ -1,8 +1,6 @@
-import { Container } from "@mantine/core";
+import type { AppProps } from "./Layout.types";
 
-type AppProps = {
-  children: React.ReactNode;
-};
+import { Container } from "@mantine/core";
 
 const Layout = ({ children }: AppProps) => {
   return (
