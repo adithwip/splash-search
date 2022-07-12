@@ -5,6 +5,7 @@ import Head from "next/head";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -24,7 +25,9 @@ export default function App(props: AppProps) {
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
           <MantineProvider withGlobalStyles withNormalizeCSS>
-            <Component {...pageProps} />
+            <NotificationsProvider>
+              <Component {...pageProps} />
+            </NotificationsProvider>
           </MantineProvider>
         </Hydrate>
         <ReactQueryDevtools />

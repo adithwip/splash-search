@@ -1,4 +1,5 @@
 const config = {
+  searchKey: 'search-key',
   favoriteImageKey: 'favorite-image'
 }
 
