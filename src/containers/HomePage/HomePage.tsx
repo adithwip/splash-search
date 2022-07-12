@@ -7,7 +7,6 @@ import {
   Text,
   ActionIcon,
   Avatar,
-  Stack,
   Group,
 } from "@mantine/core";
 import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
@@ -16,20 +15,42 @@ import { Search, Heart, Download } from "tabler-icons-react";
 import Layout from "components/Layout";
 import { useSearch } from "hooks/useSearch";
 
-import type { Favorite } from "./types";
+import type { Favorite } from "types/common";
 import config from "constants/config";
 import useStyles from "./styles";
 
 const HomePage = () => {
-  const [value, setValue] = useState("");
-  const [debouncedValue] = useDebouncedValue(value, 1000);
-  const { data, isLoading, isFetching, isError } = useSearch(debouncedValue);
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedValue] = useDebouncedValue(searchValue, 1000);
+  const { data, isLoading, isError } = useSearch(debouncedValue);
   const [favorite, setFavorite] = useLocalStorage<Favorite[]>({
     key: config.favoriteImageKey,
     defaultValue: [],
   });
 
   const { classes } = useStyles();
+
+  const handleOnClickFavorite = ({
+    id,
+    urls: { small },
+    alt_description,
+    blur_hash,
+    color,
+  }: Favorite) => {
+    const copiedFavoriteState = [...favorite];
+    const newFavoriteState = [
+      ...copiedFavoriteState,
+      {
+        id,
+        urls: { small },
+        alt_description,
+        blur_hash,
+        color,
+      },
+    ];
+
+    setFavorite(newFavoriteState);
+  };
 
   return (
     <Layout>
@@ -40,9 +61,9 @@ const HomePage = () => {
         variant="filled"
         radius="xl"
         size="md"
-        placeholder="Search image here..."
+        placeholder="Search amazing images here..."
         icon={<Search size={14} />}
-        onChange={(event) => setValue(event.currentTarget.value)}
+        onChange={(event) => setSearchValue(event.currentTarget.value)}
       />
 
       <SimpleGrid
@@ -54,10 +75,10 @@ const HomePage = () => {
           { maxWidth: 600, cols: 1, spacing: "sm" },
         ]}
       >
-        {data?.response?.results.map((res) => {
-          const {
+        {data?.response?.results.map(
+          ({
             id,
-            urls: { regular },
+            urls: { regular, small },
             alt_description,
             blur_hash,
             color,
@@ -66,77 +87,71 @@ const HomePage = () => {
               username,
               profile_image: { medium: profileImage },
             },
-          } = res;
+          }) => {
+            return (
+              <Box key={id} className={classes.image_wrapper}>
+                <Box className={classes.hover_wrapper}>
+                  <Box className={classes.favorite_action_wrapper}>
+                    <ActionIcon
+                      onClick={() =>
+                        handleOnClickFavorite({
+                          id,
+                          urls: { small },
+                          alt_description,
+                          blur_hash,
+                          color,
+                        })
+                      }
+                      component="button"
+                      variant="filled"
+                      size="lg"
+                      className={classes.favorite_action_button}
+                    >
+                      <Heart size={20} color="black" />
+                    </ActionIcon>
+                  </Box>
 
-          const handleOnClickFavorite = () => {
-            const copiedFavoriteState = [...favorite];
-            const newFavoriteState = [
-              ...copiedFavoriteState,
-              {
-                id,
-                urls: { regular },
-                alt_description,
-                blur_hash,
-                color,
-              },
-            ];
+                  <Group className={classes.users_and_download_wrapper}>
+                    <Group spacing="xs">
+                      <Avatar
+                        src={profileImage}
+                        radius="xl"
+                        alt={username + " avatar"}
+                      />
 
-            setFavorite(newFavoriteState);
-          };
+                      <Text size="sm" color="dark" weight={500}>
+                        {username}
+                      </Text>
+                    </Group>
 
-          return (
-            <Box key={id} className={classes.image_wrapper}>
-              <Box className={classes.hover_wrapper}>
-                <Box className={classes.favorite_action_wrapper}>
-                  <ActionIcon
-                    onClick={handleOnClickFavorite}
-                    component="button"
-                    variant="filled"
-                    className={classes.favorite_action_button}
-                  >
-                    <Heart size={16} color="black" />
-                  </ActionIcon>
-                </Box>
-
-                <Group className={classes.users_and_download_wrapper}>
-                  <Group spacing="xs">
-                    <Avatar
-                      src={profileImage}
-                      radius="xl"
-                      alt={username + " avatar"}
-                    />
-
-                    <Text size="sm" color="dark" weight={500}>
-                      {username}
-                    </Text>
+                    <ActionIcon
+                      component="a"
+                      href={download}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="hover"
+                      size="md"
+                    >
+                      <Download size={16} color="black" />
+                    </ActionIcon>
                   </Group>
-
-                  <ActionIcon
-                    component="a"
-                    href={download}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="outline"
-                  >
-                    <Download size={16} color="black" />
-                  </ActionIcon>
-                </Group>
+                </Box>
+                <Image
+                  src={regular}
+                  alt={alt_description as string}
+                  placeholder="blur"
+                  blurDataURL={blur_hash as string}
+                  layout="fill"
+                  objectFit="cover"
+                  objectPosition="center"
+                  style={{
+                    backgroundColor: color as string,
+                  }}
+                />
               </Box>
-              <Image
-                src={regular}
-                alt={alt_description as string}
-                placeholder="blur"
-                blurDataURL={blur_hash as string}
-                layout="fill"
-                objectFit="cover"
-                objectPosition="center"
-                style={{
-                  backgroundColor: color as string,
-                }}
-              />
-            </Box>
-          );
-        })}
+            );
+          }
+        )}
       </SimpleGrid>
     </Layout>
   );
