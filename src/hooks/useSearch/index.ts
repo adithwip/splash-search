@@ -14,7 +14,7 @@ type FetchParams = {
   page?: number,
 }
 
-const fetchUnsplashApi = async ({ query = DEFAULT_QUERY, page = 1 }: FetchParams) => {
+const fetchUnsplashApi = async ({ query = DEFAULT_QUERY, page }: FetchParams) => {
   const res = unsplash.search
     .getPhotos({ query, page, perPage: 10, orderBy: 'relevant' })
     .then((result) => {
@@ -38,6 +38,10 @@ export const useSearch = (query: string) => {
   )
 }
 
+/**
+ * Optional to the assignment
+ * but i did it anyway
+ */
 export const useInfiniteSearch = (query: string, page: number) => {
   return useInfiniteQuery(
     ['search', query],
