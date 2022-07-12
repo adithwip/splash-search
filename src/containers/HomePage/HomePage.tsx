@@ -2,11 +2,11 @@ import { useState } from "react";
 import {
   ActionIcon,
   Affix,
-  TextInput,
-  SimpleGrid,
-  Loader,
-  Center,
   Button,
+  TextInput,
+  Center,
+  Loader,
+  SimpleGrid,
   Text,
   Transition,
 } from "@mantine/core";
@@ -190,25 +190,31 @@ const HomePage = () => {
             })}
           </SimpleGrid>
 
-          <Center>
-            <Button
-              onClick={() => {
-                fetchNextPage();
-                /**
-                 * Because by default Unsplash API not giving us any page information
-                 * we need to manually update the page value with state.
-                 */
-                setPage((prevState) => prevState + 1);
-              }}
-              disabled={!hasNextPage || isFetchingNextPage}
-            >
-              {isFetchingNextPage
-                ? "Loading more..."
-                : hasNextPage
-                ? "Load More"
-                : "Nothing more to load"}
-            </Button>
-          </Center>
+          {data!.pages[0]!.response!.results.length > 0 ? (
+            <Center>
+              <Button
+                onClick={() => {
+                  fetchNextPage();
+                  /**
+                   * Because by default Unsplash API not giving us any page information
+                   * we need to manually update the page value with state.
+                   */
+                  setPage((prevState) => prevState + 1);
+                }}
+                disabled={!hasNextPage || isFetchingNextPage}
+              >
+                {isFetchingNextPage
+                  ? "Loading more..."
+                  : hasNextPage
+                  ? "Load More"
+                  : "Nothing more to load"}
+              </Button>
+            </Center>
+          ) : (
+            <Center>
+              <Text color="dimmed">No images...</Text>
+            </Center>
+          )}
         </>
       )}
     </Layout>

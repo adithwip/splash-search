@@ -27,40 +27,54 @@ const ImageCard = ({
   blurHash,
   color,
 }: Props) => {
-  console.log(
-    "🚀 ~ file: ImageCard.tsx ~ line 28 ~ onClickFavoriteButton",
-    typeof onClickFavoriteButton
-  );
   const { classes } = useStyles();
+
+  const actionButtons = (
+    <>
+      {typeof onClickFavoriteButton === "function" ? (
+        <ActionIcon
+          onClick={onClickFavoriteButton}
+          component="button"
+          variant="filled"
+          size="lg"
+          className={classes.favorite_action_button}
+        >
+          <Heart size={20} color="black" />
+        </ActionIcon>
+      ) : null}
+
+      {typeof onClickRemoveFavoriteButton === "function" ? (
+        <ActionIcon
+          onClick={onClickRemoveFavoriteButton}
+          component="button"
+          variant="filled"
+          size="lg"
+          className={classes.favorite_action_button}
+        >
+          <Trash size={20} color="black" />
+        </ActionIcon>
+      ) : null}
+    </>
+  );
+
+  const downloadButton = (
+    <ActionIcon
+      component="a"
+      href={download}
+      target="_blank"
+      rel="noopener noreferrer"
+      variant="hover"
+      size="md"
+      download
+    >
+      <Download size={16} color="black" />
+    </ActionIcon>
+  );
 
   return (
     <Box className={classes.image_wrapper}>
       <Box className={classes.hover_wrapper}>
-        <Box className={classes.favorite_action_wrapper}>
-          {typeof onClickFavoriteButton === "function" ? (
-            <ActionIcon
-              onClick={onClickFavoriteButton}
-              component="button"
-              variant="filled"
-              size="lg"
-              className={classes.favorite_action_button}
-            >
-              <Heart size={20} color="black" />
-            </ActionIcon>
-          ) : null}
-
-          {typeof onClickRemoveFavoriteButton === "function" ? (
-            <ActionIcon
-              onClick={onClickRemoveFavoriteButton}
-              component="button"
-              variant="filled"
-              size="lg"
-              className={classes.favorite_action_button}
-            >
-              <Trash size={20} color="black" />
-            </ActionIcon>
-          ) : null}
-        </Box>
+        <Box className={classes.favorite_action_wrapper}>{actionButtons}</Box>
 
         <Group className={classes.users_and_download_wrapper}>
           <Group spacing="xs">
@@ -71,18 +85,10 @@ const ImageCard = ({
             </Text>
           </Group>
 
-          <ActionIcon
-            component="a"
-            href={download}
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="hover"
-            size="md"
-          >
-            <Download size={16} color="black" />
-          </ActionIcon>
+          {downloadButton}
         </Group>
       </Box>
+
       <Image
         src={imageSrc}
         alt={alt}
@@ -95,6 +101,21 @@ const ImageCard = ({
           backgroundColor: color,
         }}
       />
+
+      <Group className={classes.mobile_action_wrapper}>
+        <Group spacing="xs">
+          <Avatar src={profileImage} radius="xl" alt={username + " avatar"} />
+
+          <Text size="sm" color="dark" weight={500}>
+            {username}
+          </Text>
+        </Group>
+
+        <Group>
+          {actionButtons}
+          {downloadButton}
+        </Group>
+      </Group>
     </Box>
   );
 };

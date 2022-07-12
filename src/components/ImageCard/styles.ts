@@ -31,6 +31,24 @@ const useStyles = createStyles((theme) => ({
     }
   },
 
+  mobile_action_wrapper: {
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'space-between',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: '0.5rem',
+
+    padding: "8px",
+    borderRadius: "6px",
+    backgroundColor: theme.colors.gray[0],
+
+    '@media (min-width: 500px)': {
+      display: 'none'
+    }
+  },
+
   favorite_action_wrapper: {
     display: "flex", justifyContent: "flex-end"
   },
