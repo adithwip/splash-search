@@ -1,11 +1,18 @@
-import { TextInput, SimpleGrid, Loader, Center } from "@mantine/core";
+import {
+  TextInput,
+  SimpleGrid,
+  Loader,
+  Center,
+  Button,
+  Text,
+} from "@mantine/core";
 import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { Search } from "tabler-icons-react";
 
 import Layout from "components/Layout";
 import ImageCard from "components/ImageCard";
-import { useSearch } from "hooks/useSearch";
+import { useInfiniteSearch, useSearch } from "hooks/useSearch";
 
 import type { Favorite } from "types/common";
 import config from "constants/config";
@@ -16,7 +23,18 @@ const HomePage = () => {
     defaultValue: "",
   });
   const [debouncedValue] = useDebouncedValue(searchValue, 1000);
-  const { data, isLoading, isError } = useSearch(debouncedValue);
+  const {
+    isLoading,
+    isError,
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteSearch(debouncedValue, 1);
+
+  /**
+   * This is the core logic to get and set favorite images via localStorage
+   */
   const [favorite, setFavorite] = useLocalStorage<Favorite[]>({
     key: config.favoriteImageKey,
     defaultValue: [],
@@ -58,6 +76,16 @@ const HomePage = () => {
     });
   };
 
+  if (isError) {
+    return (
+      <Center style={{ height: "600px" }}>
+        <Text size="sm" color="dark" weight={500}>
+          Error: There is some serious problem occured. Please retry.
+        </Text>
+      </Center>
+    );
+  }
+
   return (
     <Layout>
       <TextInput
@@ -78,57 +106,74 @@ const HomePage = () => {
           <Loader />
         </Center>
       ) : (
-        <SimpleGrid
-          cols={3}
-          my="xl"
-          breakpoints={[
-            { maxWidth: 980, cols: 3, spacing: "md" },
-            { maxWidth: 755, cols: 2, spacing: "sm" },
-            { maxWidth: 600, cols: 1, spacing: "sm" },
-          ]}
-        >
-          {data?.response?.results.map(
-            ({
-              id,
-              urls: { regular },
-              alt_description,
-              blur_hash,
-              color,
-              links: { download },
-              user: {
-                username,
-                profile_image: { medium: profileImage },
-              },
-            }) => {
-              return (
-                <ImageCard
-                  key={id}
-                  profileImage={profileImage}
-                  username={username}
-                  download={download}
-                  imageSrc={regular}
-                  alt={alt_description as string}
-                  blurHash={blur_hash as string}
-                  color={color as string}
-                  onClickFavoriteButton={() =>
-                    handleOnClickFavorite({
-                      id,
-                      urls: { regular },
-                      alt_description,
-                      blur_hash,
-                      color,
-                      links: { download },
-                      user: {
-                        username,
-                        profile_image: { medium: profileImage },
-                      },
-                    })
-                  }
-                />
+        <>
+          <SimpleGrid
+            cols={3}
+            my="xl"
+            breakpoints={[
+              { maxWidth: 980, cols: 3, spacing: "md" },
+              { maxWidth: 755, cols: 2, spacing: "sm" },
+              { maxWidth: 600, cols: 1, spacing: "sm" },
+            ]}
+          >
+            {data?.pages.map((page) => {
+              return page?.response?.results.map(
+                ({
+                  id,
+                  urls: { regular },
+                  alt_description,
+                  blur_hash,
+                  color,
+                  links: { download },
+                  user: {
+                    username,
+                    profile_image: { medium: profileImage },
+                  },
+                }) => {
+                  return (
+                    <ImageCard
+                      key={id}
+                      profileImage={profileImage}
+                      username={username}
+                      download={download}
+                      imageSrc={regular}
+                      alt={alt_description as string}
+                      blurHash={blur_hash as string}
+                      color={color as string}
+                      onClickFavoriteButton={() =>
+                        handleOnClickFavorite({
+                          id,
+                          urls: { regular },
+                          alt_description,
+                          blur_hash,
+                          color,
+                          links: { download },
+                          user: {
+                            username,
+                            profile_image: { medium: profileImage },
+                          },
+                        })
+                      }
+                    />
+                  );
+                }
               );
-            }
-          )}
-        </SimpleGrid>
+            })}
+          </SimpleGrid>
+
+          <Center>
+            <Button
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              {isFetchingNextPage
+                ? "Loading more..."
+                : hasNextPage
+                ? "Load More"
+                : "Nothing more to load"}
+            </Button>
+          </Center>
+        </>
       )}
     </Layout>
   );
