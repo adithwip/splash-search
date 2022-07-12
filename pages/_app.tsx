@@ -7,6 +7,8 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { MantineProvider } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 
+import ErrorBoundary from "components/ErrorBoundary";
+
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
 
@@ -26,7 +28,9 @@ export default function App(props: AppProps) {
         <Hydrate state={pageProps.dehydratedState}>
           <MantineProvider withGlobalStyles withNormalizeCSS>
             <NotificationsProvider>
-              <Component {...pageProps} />
+              <ErrorBoundary>
+                <Component {...pageProps} />
+              </ErrorBoundary>
             </NotificationsProvider>
           </MantineProvider>
         </Hydrate>
