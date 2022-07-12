@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   TextInput,
   SimpleGrid,
@@ -12,12 +13,13 @@ import { Search } from "tabler-icons-react";
 
 import Layout from "components/Layout";
 import ImageCard from "components/ImageCard";
-import { useInfiniteSearch, useSearch } from "hooks/useSearch";
+import { useInfiniteSearch } from "hooks/useSearch";
 
 import type { Favorite } from "types/common";
 import config from "constants/config";
 
 const HomePage = () => {
+  const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useLocalStorage({
     key: config.searchKey,
     defaultValue: "",
@@ -30,7 +32,7 @@ const HomePage = () => {
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
-  } = useInfiniteSearch(debouncedValue, 1);
+  } = useInfiniteSearch(debouncedValue, page);
 
   /**
    * This is the core logic to get and set favorite images via localStorage
@@ -163,7 +165,14 @@ const HomePage = () => {
 
           <Center>
             <Button
-              onClick={() => fetchNextPage()}
+              onClick={() => {
+                fetchNextPage();
+                /**
+                 * Because by default Unsplash API not giving us any page information
+                 * we need to manually update the page value with state.
+                 */
+                setPage((prevState) => prevState + 1);
+              }}
               disabled={!hasNextPage || isFetchingNextPage}
             >
               {isFetchingNextPage
