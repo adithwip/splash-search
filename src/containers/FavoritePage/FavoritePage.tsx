@@ -1,8 +1,8 @@
-import Image from "next/image";
-import { SimpleGrid, Box, Text } from "@mantine/core";
+import { SimpleGrid, Text } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 
 import Layout from "components/Layout";
+import ImageCard from "components/ImageCard";
 
 import type { Favorite } from "types/common";
 import config from "constants/config";
@@ -31,22 +31,29 @@ const FavoritePage = () => {
         ]}
       >
         {favorite.map(
-          ({ id, urls: { small }, alt_description, blur_hash, color }) => {
+          ({
+            id,
+            urls: { regular },
+            alt_description,
+            blur_hash,
+            color,
+            links: { download },
+            user: {
+              username,
+              profile_image: { medium: profileImage },
+            },
+          }) => {
             return (
-              <Box key={id} className={classes.image_wrapper}>
-                <Image
-                  src={small as string}
-                  alt={alt_description as string}
-                  placeholder="blur"
-                  blurDataURL={blur_hash as string}
-                  layout="fill"
-                  objectFit="cover"
-                  objectPosition="center"
-                  style={{
-                    backgroundColor: color as string,
-                  }}
-                />
-              </Box>
+              <ImageCard
+                key={id}
+                profileImage={profileImage}
+                username={username}
+                download={download}
+                imageSrc={regular}
+                alt={alt_description as string}
+                blurHash={blur_hash as string}
+                color={color as string}
+              />
             );
           }
         )}

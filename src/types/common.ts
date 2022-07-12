@@ -9,4 +9,9 @@ export type Favorite = {
   alt_description: Nullable<string>,
   blur_hash: Nullable<string>,
   color: Nullable<string>,
+  links: { download: string },
+  user: {
+    username: string,
+    profile_image: { medium: string },
+  },
 }
