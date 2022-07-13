@@ -1,13 +1,45 @@
 # SplashSearch
 
-A tiny yet advanced Unsplash image search web app
+A tiny yet advanced Unsplash image search web app 🔭
 
-## Getting Started
+## Getting Started 💻
 
-First, get your own **Unsplash Client-key** or ask me for it :)
-Put it inside `.env.local` file
+#### 1. Clone the repo
 
-Second, run the development server:
+Git clone this repository either with HTTPS, SSH, or download the repo ZIP:
+
+```bash
+# SSH
+git clone git@github.com:adithwip/splash-search.git
+
+#HTTPS
+git clone https://github.com/adithwip/splash-search.git
+```
+
+#### 2. Unsplash API Client-key
+
+Retrieve **Unsplash Client-key** from [Unsplash Developer](https://unsplash.com/developers) or ask me for it
+Put it inside `.env.local` file (you have to manually create this file)
+
+```bash
+NEXT_PUBLIC_ENV_UNSPLASH_CLIENT_KEY=aSkMeforTh1$-or-u$eItY0uRoWn
+```
+
+#### 3. Package install
+
+Node.js v12.22.0 or later. The latest the better 😉
+
+Run node package install:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+#### 4. Start the development
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -19,25 +51,25 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Development Stacks 🧱
 
-### Next.js (React v18)
+#### Next.js (React v18)
 
 In today's web development, we are fortunate to have frameworks like Next.js (or others like SvelteKit or Nuxt). Developing web apps these days with this “SDK” for the web is an advantage that every web developer shouldn’t be missed out on to take to the production level. Next.js (as of today) is the SDK of the web to simplify and take every web app to the next level. The built-in routing, data fetching APIs, Image optimization components, API routes, etc., make every web app development focuses more on the product outputs and outcomes, rather than on maintaining the framework and libraries.
 
 **Alternatives: Create React App, Gatsby, Remix**
 
-### TanStack React Query v4
+#### TanStack React Query v4
 
 React does not come with an opinionated way to fetch data, we can use React hooks API like useEffect to make side effect changes to render the UI. But modern web apps shouldn’t be dependent only on useEffect. We need to use a library to do more with the data we fetch on the client, things like caching the data, cache revalidation, optimistic UI, etc. Also, we need to separate states based on paradigms like Server State and Client/UI state. Server State is the data from another source that is not in our control, like someone’s else server. Client State, however, is what we usually manage with a state management library like Redux, the only purpose of this is just managing the web app UI states (opening/closing modal, preventing too many props drilling between parents and child component, etc).
 
 **Alternatives: SWR, Redux Toolkit Query**
 
-### Mantine
+#### Mantine
 
 Creating a web app with a component library can give both benefits and tradeoffs. When the team has its dedicated UX Designer that provided a robust Design System, using component libraries such as Mantine or other like MUI, ChakraUI, Bootstrap, etc. could double the effort of the development of the UI to customizing the components to match the Design System. Some solutions emerged such as a new paradigm like Headless UI such as Radix, which provided robust component logic with “default” styles that can be themed to match any existing Design System with ease, unlike Bootstrap which comes with a specific design in mind. But I'm not using “pure” Radix for this project because I still need quite-styled “styles” from the components and also have the flexibility to choose what logic will be used in each of the components. That’s why Mantine is chosen because it separates the package of the UI and Hooks, so this project doesn't have to install big chunks of dependencies. It also comes with a specific package for Next.js integration. Mantine uses Radix in some of its components, like ScrollArea. And most important, Mantine is accessible.
 
 **Alternatives: Material UI, ChakraUI, Radix, TailwindCSS**
 
-### Jest and React Testing Library (Unit and Integration Test)
+#### Jest and React Testing Library (Unit and Integration Test)
 
 React Testing Library “enforced” the test mindset for this project to avoid testing on implementation details, and focus more on real users-centric scenario tests instead (via DOM events). Jest as the test framework is still one of the best choices to date, also it is what the library recommended for now. It will also enable this project to have an end-to-end test via Cypress in the future.
 
@@ -52,7 +84,7 @@ The heart of this app is the search functionality. End users will be bombarding 
 
 ## Design Pattern 🎨
 
-Influenced by Solid Patterns for React, this web app codebase follows the principles of decoupled logic and view. Mainly to make a testable codebase in the future.
+Influenced by [Solid Patterns for React](https://solidbook.io/), this web app codebase follows the principles of decoupled logic and view. Mainly to make a testable codebase in the future.
 
 ## TODO 📝
 
